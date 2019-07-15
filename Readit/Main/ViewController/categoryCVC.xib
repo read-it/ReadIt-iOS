@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="SF-Compact-Display-Bold.otf">
+            <string>SFCompactDisplay-Bold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="categoryCVC" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="categoryCVC" id="gTV-IL-0wX" customClass="categoryCVC" customModule="Readit" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qgI-k6-lyD">
+                        <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                        <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" restorationIdentifier="orangeView" translatesAutoresizingMaskIntoConstraints="NO" id="8FO-Uh-dFt">
+                                <rect key="frame" x="0.0" y="26" width="30" height="4"/>
+                                <color key="backgroundColor" red="0.94509803920000002" green="0.33725490200000002" blue="0.25882352939999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="4" id="SLs-L7-cXR"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="oTY-FF-Phq"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="전체" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hty-RP-82n">
+                                <rect key="frame" x="0.0" y="0.0" width="30" height="20"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" name="SFCompactDisplay-Bold" family="SF Compact Display" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fp-HH-Ilx">
+                                <rect key="frame" x="0.0" y="1" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="8FO-Uh-dFt" secondAttribute="trailing" id="2nZ-ua-QEQ"/>
+                            <constraint firstItem="8FO-Uh-dFt" firstAttribute="leading" secondItem="qgI-k6-lyD" secondAttribute="leading" id="7I7-C4-9PO"/>
+                            <constraint firstAttribute="bottom" secondItem="8FO-Uh-dFt" secondAttribute="bottom" id="HgH-Sp-9o3"/>
+                            <constraint firstItem="8FO-Uh-dFt" firstAttribute="top" secondItem="Hty-RP-82n" secondAttribute="bottom" constant="6" id="igu-hX-EID"/>
+                            <constraint firstItem="8FO-Uh-dFt" firstAttribute="width" secondItem="Hty-RP-82n" secondAttribute="width" id="jik-1W-W3N"/>
+                            <constraint firstItem="Hty-RP-82n" firstAttribute="top" secondItem="qgI-k6-lyD" secondAttribute="top" id="qkF-hR-EJG"/>
+                            <constraint firstItem="Hty-RP-82n" firstAttribute="centerX" secondItem="qgI-k6-lyD" secondAttribute="centerX" id="wJg-Mh-yAs"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="qgI-k6-lyD" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="EuU-Vi-ABf"/>
+                <constraint firstItem="qgI-k6-lyD" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="jyE-4w-K1f"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="50" height="11"/>
+            <connections>
+                <outlet property="categoryName" destination="Hty-RP-82n" id="2jL-zB-IWS"/>
+                <outlet property="orangeView" destination="8FO-Uh-dFt" id="MiM-Ad-C6S"/>
+            </connections>
+            <point key="canvasLocation" x="213.04347826086959" y="72.991071428571431"/>
+        </collectionViewCell>
+    </objects>
+</document>
