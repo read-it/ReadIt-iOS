@@ -30,7 +30,7 @@ class MainViewController: UIViewController {
     var categoryIdx: Int?
     var sortIdx: Int?
     var categoryList : [MainCategoryList] = []
-    var contentsList : [MainContentsList] = []
+    var mainContentsList : [MainContentsList] = []
     var cateContentsList : [CateContentsList] = []
     var profile : [MainData] = []
     
@@ -43,19 +43,33 @@ class MainViewController: UIViewController {
         self.registerCVC()
         self.registerTVC()
         
-        self.contentsTV.delegate = self
         self.contentsTV.dataSource = self
-    
+        self.contentsTV.delegate = self
+        
         self.categoryCV.delegate = self
         self.categoryCV.dataSource = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        setMainData()
+        DispatchQueue.global().sync {
+            setMainData()
+        }
+        setMainContents()
+        
+        self.contentsTV.dataSource = self
+        self.contentsTV.delegate = self
+        
+        self.categoryCV.delegate = self
+        self.categoryCV.dataSource = self
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
     @IBAction func unwindSegue(segue: UIStoryboardSegue){}
     
     func setImgRounded() {
@@ -94,11 +108,8 @@ extension MainViewController : UITableViewDataSource {
         
         cell.title.text = contents.title
         cell.address!.setTitle(contents.site_url, for: .normal)
-        
         cell.category.setTitle(contents.category_name, for: .normal)
-    
         cell.date.text = contents.after_create_date
-    
         cell.highlightCount.text = String(contents.highlight_cnt)
         
         if contents.thumbnail != nil {
@@ -117,7 +128,7 @@ extension MainViewController : UITableViewDataSource {
             cell.isUnRead()
         }
         
-        if contentsList.count == 0 {
+        if cateContentsList.count == 0 {
             defaultView.isHidden = false
         }
 
@@ -144,34 +155,33 @@ extension MainViewController : UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        
         // 웹 뷰 seque
         let storyboard = UIStoryboard(name: "WebStoryboard", bundle: nil)
         let webDVC = storyboard.instantiateViewController(withIdentifier: "WebStoryboard") as! WebViewController
         present(webDVC, animated: true, completion: nil)
         
-        let url = URL(string: contentsList[indexPath.row].contents_url!)
+        let url = URL(string: cateContentsList[indexPath.row].contents_url!)
         let request = URLRequest(url: url!)
         webDVC.uiWebView.loadRequest(request)
-        
-        let contentsIdx = contentsList[indexPath.row].contents_idx
-        
+
+        let contentsIdx = cateContentsList[indexPath.row].contents_idx
+
         ContentsService.shared.ReadContents(contents_idx: contentsIdx) {
             [weak self]
             (data) in
             guard let `self` = self else { return }
-            
+
             switch data {
             // 매개변수에 어떤 값을 가져올 것인지
-            case .success(let res):
+            case .success:
                 print("읽음 처리 성공")
-                
+
             case .pathErr:
                 print(".pathErr")
-                
+
             case .serverErr:
                 print(".serverErr")
-                
+
             case .networkFail:
                 print("네트워크 오류")
             case .error(_):
@@ -205,7 +215,6 @@ extension MainViewController : UIScrollViewDelegate {
 
 
 extension MainViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if categoryList.count == 1 {
             toastImg.isHidden = false
@@ -219,14 +228,18 @@ extension MainViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        //auto selected 1st item
+        categoryCV.allowsSelection = true
+        let indexPathForFirstRow = IndexPath(row: 0, section: 0)
+        self.categoryCV?.selectItem(at: indexPathForFirstRow, animated: true, scrollPosition: [])
+        
         let cell = categoryCV.dequeueReusableCell(withReuseIdentifier: "categoryCVC", for: indexPath) as! categoryCVC
-
         let category = categoryList[indexPath.row]
 
         cell.categoryName.text  = category.category_name
         cell.categoryName.sizeToFit()
         cell.orangeView.tag = categoryList[indexPath.row].category_idx
-            return cell
+        return cell
     }
 }
 
@@ -239,31 +252,33 @@ extension MainViewController: UICollectionViewDelegate {
         let category_idx = categoryList[indexPath.row].category_idx
         
 //        cell.orangeView.viewWithTag(idx)!.isHidden = true
+        
+        
         cell.orangeView.isHidden = false
         idx = indexPath.row
         
         let sort = 1
-    StorageService.shared.categorySelectView(category_idx: category_idx, sort: sort) {
+        StorageService.shared.categorySelectView(category_idx: category_idx, sort: sort) {
             [weak self]
             (data) in
             guard let `self` = self else { return }
-            
+
             switch data {
             // 매개변수에 어떤 값을 가져올 것인지
             case .success(let res):
                 let categorySelectData = res as? CategorySelectData
                 self.totalContents.text = "\(categorySelectData!.total_count)개"
                 self.nonRead.text = "\(categorySelectData!.unread_count)개"
-                
+
                 self.cateContentsList = categorySelectData!.contents_list
                 self.contentsTV.reloadData()
-                
+
             case .pathErr:
                 print(".pathErr")
-                
+
             case .serverErr:
                 print(".serverErr")
-                
+
             case .networkFail:
                 print("네트워크 오류")
             case .error(_):
@@ -278,13 +293,14 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let count = categoryList[indexPath.row].category_name.utf8.count
+        let category = categoryList[indexPath.row]
         
-        let width: CGFloat = CGFloat(count*7)
-        let height: CGFloat = 50
+        let label = UILabel(frame: CGRect.zero)
+        label.text = category.category_name
+        label.sizeToFit()
         
+        return CGSize(width: label.frame.width, height: 30)
         
-        return CGSize(width: width, height: height)
     }
     
 
@@ -294,13 +310,13 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
+        
+        return 22
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
     
-
-        return UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
     }
 }
 
@@ -308,7 +324,7 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
 
 extension MainViewController {
     func setMainData() {
-        
+        print("first")
         StorageService.shared.mainView() {
             [weak self]
             (data) in
@@ -328,11 +344,39 @@ extension MainViewController {
                 self.totalContents.text = "\(mainData!.total_count)개"
                 self.nonRead.text = "\(mainData!.unread_count)개"
                 
-                self.contentsList = mainData!.contents_list
-                self.contentsTV.reloadData()
-                
                 self.categoryList = mainData!.category_list
-                    self.categoryCV.reloadData()
+                self.categoryCV.reloadData()
+                
+            case .pathErr:
+                print(".pathErr")
+                
+            case .serverErr:
+                print(".serverErr")
+                
+            case .networkFail:
+                print("d")
+            case .error(_):
+                print("d")
+            }
+        }
+    }
+    
+    func setMainContents() {
+        let sort = 1
+        
+        StorageService.shared.categorySelectView(category_idx: 168, sort: sort) {
+            [weak self]
+            (data) in
+            
+            guard let `self` = self else { return }
+            
+            switch data {
+            // 매개변수에 어떤 값을 가져올 것인지
+            case .success(let res):
+                let mainContents = res as? CategorySelectData
+             
+                self.cateContentsList = mainContents!.contents_list
+                self.contentsTV.reloadData()
                 
             case .pathErr:
                 print(".pathErr")

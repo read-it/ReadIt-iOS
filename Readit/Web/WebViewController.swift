@@ -85,15 +85,9 @@ func secondhighlighting(into webView: UIWebView) {
     webView.stringByEvaluatingJavaScript(from: js as Any as! String)
 }
 
-
-
-
-
 func coping(webView: UIWebView) {
     let js = "function getText() { var sel = window.getSelection().toString(); return sel } getText();"
-   
     UIPasteboard.general.string = webView.stringByEvaluatingJavaScript(from: js) as Any as? String
-
 }
 
 func erasing(into webView: UIWebView) {

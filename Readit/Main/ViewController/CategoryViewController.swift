@@ -29,6 +29,8 @@ class CategoryViewController: UIViewController {
         setData()
         self.animationDownUI()
         
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
     }
     
     @IBAction func unwindSegue(segue: UIStoryboardSegue){}
@@ -92,22 +94,13 @@ extension CategoryViewController: UICollectionViewDataSource {
 
 extension CategoryViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Category", for: indexPath) as! FooCell
-        
         let category = categoryList[indexPath.row]
-        
-        cell.label.text = category.category_name
-        cell.label.sizeToFit()
-        
-        
-        let count = categoryList[indexPath.row].category_name!.utf8.count
 
-        let width: CGFloat = CGFloat(count*7)
-        let height: CGFloat = 30
+        let label = UILabel(frame: CGRect.zero)
+        label.text = category.category_name
+        label.sizeToFit()
         
-        
-        return CGSize(width: width, height: height)
+        return CGSize(width: label.frame.width, height: 30)
     }
     
     
@@ -117,11 +110,10 @@ extension CategoryViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 18
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        
         
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }}
